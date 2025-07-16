@@ -14,6 +14,7 @@ import { RFValue } from "react-native-responsive-fontsize";
 import { useAuth, useUser } from "@clerk/clerk-expo";
 import { api } from "@packages/backend/convex/_generated/api";
 import { useQuery } from "convex/react";
+import { darkTheme } from "../theme";
 
 const NotesDashboardScreen = ({ navigation }) => {
   const user = useUser();
@@ -68,7 +69,7 @@ const NotesDashboardScreen = ({ navigation }) => {
         <Feather
           name="search"
           size={20}
-          color="grey"
+          color={darkTheme.colors.text}
           style={styles.searchIcon}
         />
         <TextInput
@@ -93,7 +94,7 @@ const NotesDashboardScreen = ({ navigation }) => {
           contentContainerStyle={{
             marginTop: 19,
             borderTopWidth: 0.5,
-            borderTopColor: "rgba(0, 0, 0, 0.59)",
+            borderTopColor: darkTheme.colors.border,
           }}
         />
       )}
@@ -102,7 +103,7 @@ const NotesDashboardScreen = ({ navigation }) => {
         onPress={() => navigation.navigate("CreateNoteScreen")}
         style={styles.newNoteButton}
       >
-        <AntDesign name="pluscircle" size={20} color="#fff" />
+        <AntDesign name="pluscircle" size={20} color={darkTheme.colors.text} />
         <Text style={styles.newNoteButtonText}>Create a New Note</Text>
       </TouchableOpacity>
     </View>
@@ -112,10 +113,10 @@ const NotesDashboardScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "white",
+    backgroundColor: darkTheme.colors.background,
   },
   header: {
-    backgroundColor: "#0D87E1",
+    backgroundColor: darkTheme.colors.primary,
     height: 67,
     justifyContent: "center",
     alignItems: "center",
@@ -130,6 +131,7 @@ const styles = StyleSheet.create({
     fontSize: RFValue(17.5),
     fontFamily: "MMedium",
     alignSelf: "center",
+    color: darkTheme.colors.text,
   },
   yourNotesContainer: {
     flexDirection: "row",
@@ -147,20 +149,22 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     borderWidth: 1,
-    borderColor: "grey",
+    borderColor: darkTheme.colors.border,
     borderRadius: 10,
     padding: 10,
     marginHorizontal: 15,
     marginTop: 30,
+    backgroundColor: darkTheme.colors.card,
   },
   searchIcon: {
     marginRight: 10,
+    color: darkTheme.colors.text,
   },
   searchInput: {
     flex: 1,
     fontSize: RFValue(15),
     fontFamily: "MRegular",
-    color: "#2D2D2D",
+    color: darkTheme.colors.text,
   },
   notesList: {
     flex: 1,
@@ -168,19 +172,17 @@ const styles = StyleSheet.create({
   noteItem: {
     padding: 20,
     borderBottomWidth: 0.5,
-    borderBottomColor: "rgba(0, 0, 0, 0.59)",
-
-    backgroundColor: "#F9FAFB",
+    borderBottomColor: darkTheme.colors.border,
+    backgroundColor: darkTheme.colors.card,
   },
   noteText: {
     fontSize: 16,
     fontFamily: "MLight",
-    color: "#2D2D2D",
+    color: darkTheme.colors.text,
   },
-
   newNoteButton: {
     flexDirection: "row",
-    backgroundColor: "#0D87E1",
+    backgroundColor: darkTheme.colors.primary,
     borderRadius: 7,
     width: Dimensions.get("window").width / 1.6,
     alignSelf: "center",
@@ -196,14 +198,13 @@ const styles = StyleSheet.create({
     },
     shadowOpacity: 0.27,
     shadowRadius: 4.65,
-
     elevation: 6,
   },
   newNoteButtonText: {
-    color: "white",
+    color: darkTheme.colors.text,
+    fontFamily: "SemiBold",
     fontSize: RFValue(15),
-    fontFamily: "MMedium",
-    marginLeft: 10,
+    marginLeft: 8,
   },
   switchContainer: {
     position: "absolute",
@@ -211,21 +212,15 @@ const styles = StyleSheet.create({
     right: 20,
   },
   emptyStateText: {
+    color: darkTheme.colors.text,
+    fontFamily: "Regular",
+    fontSize: RFValue(16),
     textAlign: "center",
-    alignSelf: "center",
-    fontSize: RFValue(15),
-    color: "grey",
-    fontFamily: "MLight",
   },
   emptyState: {
-    width: "100%",
-    height: "35%",
-    marginTop: 19,
-    backgroundColor: "#F9FAFB",
-    justifyContent: "center",
+    flex: 1,
     alignItems: "center",
-    borderWidth: 0.5,
-    borderColor: "rgba(0, 0, 0, 0.59)",
+    justifyContent: "center",
   },
 });
 

@@ -102,7 +102,7 @@ const LoginScreen = ({ navigation }) => {
     <View style={styles.container}>
       <View style={styles.card}>
         <Image
-          source={require("../assets/icons/logo.png")} // Ensure the correct path to your logo image file
+          source={require("../assets/icons/logo.png")}
           style={styles.logo}
         />
         <Text style={styles.title}>Log in to your account</Text>
@@ -124,7 +124,7 @@ const LoginScreen = ({ navigation }) => {
           style={styles.buttonApple}
           onPress={() => onPress("apple")}
         >
-          <AntDesign name="apple1" size={24} color="black" />
+          <AntDesign name="apple1" size={24} color="#000" />
           <Text
             style={{ ...styles.buttonText, color: "#344054", marginLeft: 12 }}
           >

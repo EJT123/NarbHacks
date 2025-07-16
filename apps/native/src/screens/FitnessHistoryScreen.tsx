@@ -22,7 +22,12 @@ const FitnessHistoryScreen = ({ navigation }) => {
         <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
           <AntDesign name="arrowleft" size={24} color="#fff" />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>Fitness History</Text>
+        <View style={styles.headerTitleContainer}>
+          <View style={styles.headerLogo}>
+            <Text style={styles.headerLogoText}>DF</Text>
+          </View>
+          <Text style={styles.headerTitle}>DailyForm</Text>
+        </View>
         <View style={{ width: 24 }} />
       </View>
 
@@ -142,6 +147,24 @@ const styles = StyleSheet.create({
   },
   backButton: {
     padding: 8,
+  },
+  headerTitleContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  headerLogo: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    backgroundColor: '#F97316',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 8,
+  },
+  headerLogoText: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#FFFFFF',
   },
   headerTitle: {
     fontSize: 24,

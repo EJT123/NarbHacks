@@ -5,6 +5,8 @@ import InsideNoteScreen from "../screens/InsideNoteScreen";
 import CreateNoteScreen from "../screens/CreateNoteScreen";
 import FitnessTrackerScreen from "../screens/FitnessTrackerScreen";
 import FitnessHistoryScreen from "../screens/FitnessHistoryScreen";
+import UserSetupScreen from "../screens/UserSetupScreen";
+import ExtraFeaturesScreen from "../screens/ExtraFeaturesScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -15,6 +17,8 @@ const AppStack = () => (
     <Stack.Screen name="CreateNoteScreen" component={CreateNoteScreen} />
     <Stack.Screen name="FitnessTrackerScreen" component={FitnessTrackerScreen} />
     <Stack.Screen name="FitnessHistoryScreen" component={FitnessHistoryScreen} />
+    <Stack.Screen name="UserSetupScreen" component={UserSetupScreen} />
+    <Stack.Screen name="ExtraFeaturesScreen" component={ExtraFeaturesScreen} />
   </Stack.Navigator>
 );
 

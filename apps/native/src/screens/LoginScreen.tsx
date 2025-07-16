@@ -1,234 +1,222 @@
-import React, { useEffect } from "react";
-import { StyleSheet, View, Text, TouchableOpacity, Image, Alert } from "react-native";
-import { RFValue } from "react-native-responsive-fontsize";
-import { useOAuth, useUser, useAuth } from "@clerk/clerk-expo";
-import { AntDesign } from "@expo/vector-icons";
+import React from "react";
+import { View, Text, StyleSheet, TouchableOpacity, Image } from "react-native";
+import { useOAuth } from "@clerk/clerk-expo";
+import { AntDesign } from '@expo/vector-icons';
 
-const LoginScreen = ({ navigation }) => {
-  const { isLoaded: userLoaded, user } = useUser();
-  const { isLoaded: authLoaded, isSignedIn } = useAuth();
-  
-  const { startOAuthFlow: startGoogleAuthFlow } = useOAuth({
-    strategy: "oauth_google",
-  });
-  const { startOAuthFlow: startAppleAuthFlow } = useOAuth({
-    strategy: "oauth_apple",
-  });
+export default function LoginScreen({ navigation }) {
+  const { startOAuthFlow } = useOAuth({ strategy: "oauth_google" });
 
-  useEffect(() => {
-    if (isSignedIn) {
-      navigation.navigate("NotesDashboardScreen");
-    }
-  }, [userLoaded, authLoaded, isSignedIn, user]);
-
-  const onPress = async (authType: string) => {
+  const onPress = React.useCallback(async () => {
     try {
-      if (authType === "google") {
-        const result = await startGoogleAuthFlow();
-        const { createdSessionId, setActive, signIn, signUp } = result;
-        if (createdSessionId) {
-          await setActive({ session: createdSessionId });
-          navigation.navigate("NotesDashboardScreen");
-        } else if (signUp) {
-          // If signUp is present, this is a new user. Complete sign up.
-          try {
-            console.log('signUp object:', signUp, 'keys:', Object.keys(signUp));
-            // If phone number is required, you may need to collect it here.
-            const { createdSessionId: newSessionId } = await signUp.create({});
-            if (newSessionId) {
-              await setActive({ session: newSessionId });
-              navigation.navigate("NotesDashboardScreen");
-            }
-          } catch (signUpError) {
-            Alert.alert(
-              "Sign Up Error",
-              signUpError.message || "Could not complete sign up. Please try again or contact support.",
-              [{ text: "OK" }]
-            );
-          }
-        } else if (signIn && signIn.firstFactorVerification?.error) {
-          Alert.alert(
-            "Sign In Error",
-            "This Google account is not associated with an existing user. Please sign up first.",
-            [{ text: "OK" }]
-          );
-        }
-      } else if (authType === "apple") {
-        const result = await startAppleAuthFlow();
-        const { createdSessionId, setActive } = result;
-        if (createdSessionId) {
-          await setActive({ session: createdSessionId });
-          navigation.navigate("NotesDashboardScreen");
-        }
+      const { createdSessionId, setActive } = await startOAuthFlow();
+
+      if (createdSessionId && setActive) {
+        setActive({ session: createdSessionId });
+        navigation.navigate("NotesDashboardScreen");
       }
     } catch (err) {
-      Alert.alert(
-        "Authentication Error",
-        `Failed to sign in with ${authType}. Error: ${err.message || "Unknown error"}`,
-        [{ text: "OK" }]
-      );
+      console.error("OAuth error", err);
     }
-  };
+  }, []);
 
   return (
     <View style={styles.container}>
-      <View style={styles.card}>
-        <Image
-          source={require("../assets/icons/logo.png")}
-          style={styles.logo}
-        />
-        <Text style={styles.title}>Log in to your account</Text>
-        <Text style={styles.subtitle}>Welcome! Please login below.</Text>
-        <TouchableOpacity
-          style={styles.buttonGoogle}
-          onPress={() => onPress("google")}
-        >
-          <Image
-            style={styles.googleIcon}
-            source={require("../assets/icons/google.png")}
-          />
-          <Text style={{ ...styles.buttonText, color: "#344054" }}>
-            Continue with Google
-          </Text>
-        </TouchableOpacity>
+      {/* Background Gradient Effect */}
+      <View style={styles.backgroundGradient} />
+      
+      {/* Logo and Branding */}
+      <View style={styles.logoContainer}>
+        <View style={styles.logoWrapper}>
+          <View style={styles.logo}>
+            <Text style={styles.logoText}>DF</Text>
+            <View style={styles.logoPulse} />
+          </View>
+        </View>
+        <Text style={styles.appName}>DailyForm</Text>
+        <Text style={styles.tagline}>Track. Transform. Thrive.</Text>
+      </View>
 
-        <TouchableOpacity
-          style={styles.buttonApple}
-          onPress={() => onPress("apple")}
-        >
-          <AntDesign name="apple1" size={24} color="#000" />
-          <Text
-            style={{ ...styles.buttonText, color: "#344054", marginLeft: 12 }}
-          >
-            Continue with Apple
-          </Text>
-        </TouchableOpacity>
+      {/* Welcome Text */}
+      <View style={styles.welcomeContainer}>
+        <Text style={styles.welcomeTitle}>Welcome to DailyForm</Text>
+        <Text style={styles.welcomeSubtitle}>
+          Your personal fitness and wellness companion. Start your journey to better health today.
+        </Text>
+      </View>
 
-        <View style={styles.signupContainer}>
-          <Text style={{ fontFamily: "Regular" }}>Don’t have an account? </Text>
-          <Text>Sign up above.</Text>
+      {/* Login Button */}
+      <View style={styles.buttonContainer}>
+        <TouchableOpacity style={styles.googleButton} onPress={onPress}>
+          <View style={styles.buttonContent}>
+            <AntDesign name="google" size={20} color="#FFFFFF" />
+            <Text style={styles.buttonText}>Continue with Google</Text>
+          </View>
+        </TouchableOpacity>
+        
+        <Text style={styles.termsText}>
+          By continuing, you agree to our Terms of Service and Privacy Policy
+        </Text>
+      </View>
+
+      {/* Features Preview */}
+      <View style={styles.featuresContainer}>
+        <View style={styles.featureItem}>
+          <View style={styles.featureIcon}>
+            <AntDesign name="linechart" size={16} color="#F97316" />
+          </View>
+          <Text style={styles.featureText}>Smart Analytics</Text>
+        </View>
+        <View style={styles.featureItem}>
+          <View style={styles.featureIcon}>
+            <AntDesign name="heart" size={16} color="#3B82F6" />
+          </View>
+          <Text style={styles.featureText}>Health Insights</Text>
+        </View>
+        <View style={styles.featureItem}>
+          <View style={styles.featureIcon}>
+            <AntDesign name="sync" size={16} color="#10B981" />
+          </View>
+          <Text style={styles.featureText}>Real-time Sync</Text>
         </View>
       </View>
     </View>
   );
-};
+}
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
+    backgroundColor: "#111827",
+    justifyContent: "space-between",
+    paddingHorizontal: 24,
+    paddingTop: 60,
+    paddingBottom: 40,
   },
-  card: {
-    backgroundColor: "#fff",
-    padding: 10,
+  backgroundGradient: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: '#111827',
+  },
+  logoContainer: {
     alignItems: "center",
-    width: "98%",
+    marginTop: 40,
+  },
+  logoWrapper: {
+    marginBottom: 16,
   },
   logo: {
-    width: 74,
-    height: 74,
-    marginTop: 20,
+    width: 80,
+    height: 80,
+    backgroundColor: "#F97316",
+    borderRadius: 24,
+    alignItems: "center",
+    justifyContent: "center",
+    shadowColor: "#F97316",
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.3,
+    shadowRadius: 16,
+    elevation: 8,
   },
-  title: {
-    marginTop: 49,
-    fontSize: RFValue(21),
-    fontFamily: "SemiBold",
+  logoText: {
+    fontSize: 32,
+    fontWeight: "bold",
+    color: "#FFFFFF",
   },
-  subtitle: {
-    marginTop: 8,
-    fontSize: RFValue(14),
-    color: "#000",
-    fontFamily: "Regular",
-    marginBottom: 32,
+  logoPulse: {
+    position: 'absolute',
+    top: -4,
+    right: -4,
+    width: 16,
+    height: 16,
+    backgroundColor: "#3B82F6",
+    borderRadius: 8,
+  },
+  appName: {
+    fontSize: 36,
+    fontWeight: "bold",
+    color: "#FFFFFF",
+    marginBottom: 8,
+  },
+  tagline: {
+    fontSize: 16,
+    color: "#9CA3AF",
+    fontWeight: "500",
+  },
+  welcomeContainer: {
+    alignItems: "center",
+    marginTop: 40,
+  },
+  welcomeTitle: {
+    fontSize: 28,
+    fontWeight: "bold",
+    color: "#FFFFFF",
     textAlign: "center",
+    marginBottom: 12,
   },
-  input: {
-    width: "100%",
-    borderWidth: 1,
-    borderColor: "#D0D5DD",
-    borderRadius: 10,
-    padding: 14,
+  welcomeSubtitle: {
+    fontSize: 16,
+    color: "#9CA3AF",
+    textAlign: "center",
+    lineHeight: 24,
+    maxWidth: 300,
+  },
+  buttonContainer: {
+    alignItems: "center",
+    marginTop: 40,
+  },
+  googleButton: {
+    backgroundColor: "#F97316",
+    paddingVertical: 16,
+    paddingHorizontal: 32,
+    borderRadius: 16,
+    shadowColor: "#F97316",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 6,
     marginBottom: 16,
-    fontFamily: "Regular",
-    fontSize: RFValue(14),
   },
-  buttonEmail: {
-    backgroundColor: "#0D87E1",
-    padding: 15,
-    borderRadius: 10,
-    width: "100%",
-    marginBottom: 24,
-    minHeight: 44,
+  buttonContent: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
   },
   buttonText: {
+    color: "#FFFFFF",
+    fontSize: 16,
+    fontWeight: "600",
+    marginLeft: 12,
+  },
+  termsText: {
+    fontSize: 12,
+    color: "#6B7280",
     textAlign: "center",
-    color: "#FFF",
-    fontFamily: "SemiBold",
-    fontSize: RFValue(14),
+    maxWidth: 280,
+    lineHeight: 18,
   },
-  buttonTextWithIcon: {
-    marginLeft: 10,
-  },
-  dividerContainer: {
+  featuresContainer: {
     flexDirection: "row",
+    justifyContent: "space-around",
+    marginTop: 40,
+  },
+  featureItem: {
     alignItems: "center",
-    width: "100%",
-    marginBottom: 24,
   },
-  divider: {
-    flex: 1,
-    height: 1,
-    backgroundColor: "#000",
-  },
-  dividerText: {
-    marginHorizontal: 10,
-    color: "#000",
-    fontFamily: "Medium",
-  },
-  buttonGoogle: {
-    flexDirection: "row",
+  featureIcon: {
+    width: 32,
+    height: 32,
+    backgroundColor: "#1F2937",
+    borderRadius: 16,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "#FFF",
-    borderRadius: 10,
-    borderWidth: 1,
-    borderColor: "#D0D5DD",
-    width: "100%",
-    marginBottom: 12,
-    height: 44,
-  },
-  buttonApple: {
-    flexDirection: "row",
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "#FFF",
-    padding: 15,
-    borderRadius: 10,
-    borderWidth: 1,
-    borderColor: "#D0D5DD",
-    width: "100%",
-    marginBottom: 32,
-  },
-  signupContainer: {
-    flexDirection: "row",
-  },
-  signupText: {
-    color: "#4D9DE0",
-    fontFamily: "SemiBold",
-  },
-  googleIcon: {
-    width: 24,
-    height: 24,
-    marginRight: 12,
-  },
-  errorText: {
-    fontSize: RFValue(14),
-    color: "tomato",
-    fontFamily: "Medium",
-    alignSelf: "flex-start",
     marginBottom: 8,
-    marginLeft: 4,
+  },
+  featureText: {
+    fontSize: 12,
+    color: "#9CA3AF",
+    textAlign: "center",
   },
 });
-
-export default LoginScreen;

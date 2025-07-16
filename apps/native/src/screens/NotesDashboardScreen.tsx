@@ -79,41 +79,57 @@ const NotesDashboardScreen = ({ navigation }) => {
           style={styles.searchInput}
         />
       </View>
-      {!finalNotes || finalNotes.length === 0 ? (
-        <View style={styles.emptyState}>
-          <Text style={styles.emptyStateText}>
-            Create your first note to{"\n"}get started
-          </Text>
-        </View>
-      ) : (
-        <FlatList
-          data={finalNotes}
-          renderItem={renderItem}
-          keyExtractor={(item) => item._id}
-          style={styles.notesList}
-          contentContainerStyle={{
-            marginTop: 19,
-            borderTopWidth: 0.5,
-            borderTopColor: darkTheme.colors.border,
+      <View style={styles.contentContainer}>
+        {!finalNotes || finalNotes.length === 0 ? (
+          <View style={styles.emptyState}>
+            <Text style={styles.emptyStateText}>
+              Create your first note to{"\n"}get started
+            </Text>
+          </View>
+        ) : (
+          <FlatList
+            data={finalNotes}
+            renderItem={renderItem}
+            keyExtractor={(item) => item._id}
+            style={styles.notesList}
+            contentContainerStyle={{
+              marginTop: 19,
+              borderTopWidth: 0.5,
+              borderTopColor: darkTheme.colors.border,
+              paddingBottom: 20,
+            }}
+          />
+        )}
+      </View>
+
+      <View style={styles.buttonContainer}>
+        <TouchableOpacity
+          onPress={() => navigation.navigate("CreateNoteScreen")}
+          style={styles.newNoteButton}
+        >
+          <AntDesign name="pluscircle" size={20} color={darkTheme.colors.text} />
+          <Text style={styles.newNoteButtonText}>Create a New Note</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          onPress={() => navigation.navigate("FitnessTrackerScreen")}
+          style={[styles.newNoteButton, { backgroundColor: darkTheme.colors.accent, marginTop: 16 }]}
+        >
+          <AntDesign name="heart" size={20} color={darkTheme.colors.text} />
+          <Text style={styles.newNoteButtonText}>Fitness Tracker</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          onPress={() => {
+            console.log("Setup Profile button pressed");
+            navigation.navigate("UserSetupScreen");
           }}
-        />
-      )}
-
-      <TouchableOpacity
-        onPress={() => navigation.navigate("CreateNoteScreen")}
-        style={styles.newNoteButton}
-      >
-        <AntDesign name="pluscircle" size={20} color={darkTheme.colors.text} />
-        <Text style={styles.newNoteButtonText}>Create a New Note</Text>
-      </TouchableOpacity>
-
-      <TouchableOpacity
-        onPress={() => navigation.navigate("FitnessTrackerScreen")}
-        style={[styles.newNoteButton, { backgroundColor: darkTheme.colors.accent, marginTop: 16 }]}
-      >
-        <AntDesign name="heart" size={20} color={darkTheme.colors.text} />
-        <Text style={styles.newNoteButtonText}>Fitness Tracker</Text>
-      </TouchableOpacity>
+          style={[styles.newNoteButton, { backgroundColor: "#F97316", marginTop: 16 }]}
+        >
+          <AntDesign name="user" size={20} color={darkTheme.colors.text} />
+          <Text style={styles.newNoteButtonText}>Setup Profile</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 };
@@ -174,6 +190,9 @@ const styles = StyleSheet.create({
     fontFamily: "MRegular",
     color: darkTheme.colors.text,
   },
+  contentContainer: {
+    flex: 1,
+  },
   notesList: {
     flex: 1,
   },
@@ -188,17 +207,20 @@ const styles = StyleSheet.create({
     fontFamily: "MLight",
     color: darkTheme.colors.text,
   },
+  buttonContainer: {
+    paddingHorizontal: 20,
+    paddingBottom: 20,
+    paddingTop: 20,
+  },
   newNoteButton: {
     flexDirection: "row",
     backgroundColor: darkTheme.colors.primary,
     borderRadius: 7,
-    width: Dimensions.get("window").width / 1.6,
+    width: "100%",
     alignSelf: "center",
     alignItems: "center",
     justifyContent: "center",
     minHeight: 44,
-    position: "absolute",
-    bottom: 35,
     shadowColor: "#000",
     shadowOffset: {
       width: 0,

@@ -1,35 +1,35 @@
 {
   "expo": {
-    "newArchEnabled": true,
-    "name": "NotesContract",
-    "slug": "NotesContract",
+    "name": "DailyForm",
+    "slug": "dailyform",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
-    "userInterfaceStyle": "light",
+    "userInterfaceStyle": "dark",
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
-      "backgroundColor": "#0D87E1"
+      "backgroundColor": "#111827"
     },
     "assetBundlePatterns": [
       "**/*"
     ],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.anonymous.NotesContract"
+      "bundleIdentifier": "com.dailyform.app"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
-      }
+        "backgroundColor": "#111827"
+      },
+      "package": "com.dailyform.app"
     },
     "web": {
       "favicon": "./assets/favicon.png"
     },
-    "plugins": [
-      "expo-font"
-    ]
+    "plugins": [],
+    "scheme": "dailyform",
+    "description": "Your personal fitness and wellness companion. Track, transform, and thrive with intelligent insights and beautiful analytics."
   }
 }

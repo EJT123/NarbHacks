@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { api } from "@packages/backend/convex/_generated/api";
 import { useMutation, useQuery } from "convex/react";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import AdaptiveAvatar from "./AdaptiveAvatar";
 
 const getTodayKey = () => {
   const today = new Date();
@@ -89,9 +90,17 @@ const FitnessTracker = () => {
   return (
     <div className="min-h-screen bg-gray-900 text-white">
       <div className="container mx-auto px-4 py-8">
-        <h1 className="text-4xl font-bold text-center mb-8 text-white">
-          Fitness Tracker
-        </h1>
+        <div className="text-center mb-8">
+          <div className="flex items-center justify-center space-x-3 mb-4">
+            <div className="w-12 h-12 bg-gradient-to-br from-orange-500 to-orange-600 rounded-xl flex items-center justify-center shadow-lg">
+              <span className="text-white font-bold text-lg">DF</span>
+            </div>
+            <h1 className="text-4xl font-bold bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">
+              DailyForm
+            </h1>
+          </div>
+          <p className="text-gray-400 text-lg">Your Personal Fitness & Wellness Tracker</p>
+        </div>
 
         {/* Stats Overview Cards */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
@@ -146,6 +155,11 @@ const FitnessTracker = () => {
               </div>
             </div>
           )}
+        </div>
+
+        {/* Adaptive Avatar Section */}
+        <div className="mb-8">
+          <AdaptiveAvatar />
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">

@@ -65,6 +65,15 @@ export default function Header() {
                         See your Notes
                       </button>
                     </Link>
+                    <Link href="/fitness">
+                      <button
+                        type="button"
+                        className=" text-white text-center text-xl not-italic font-normal leading-[normal] font-montserrat px-[22px] py-[11px] button"
+                        style={{ backgroundColor: '#FF6B81' }}
+                      >
+                        Fitness Tracker
+                      </button>
+                    </Link>
                     <UserNav
                       image={user?.imageUrl}
                       name={user?.fullName!}

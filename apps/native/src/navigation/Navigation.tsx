@@ -7,6 +7,7 @@ import InsideNoteScreen from "../screens/InsideNoteScreen";
 import CreateNoteScreen from "../screens/CreateNoteScreen";
 import FitnessTrackerScreen from "../screens/FitnessTrackerScreen";
 import FitnessExtraScreen from "../screens/FitnessExtraScreen";
+import FitnessHistoryScreen from "../screens/FitnessHistoryScreen";
 import { useAuth } from "@clerk/clerk-expo";
 
 const Stack = createNativeStackNavigator();
@@ -30,6 +31,7 @@ const Navigation = () => {
             <Stack.Screen name="InsideNoteScreen" component={InsideNoteScreen} />
             <Stack.Screen name="CreateNoteScreen" component={CreateNoteScreen} />
             <Stack.Screen name="FitnessTrackerScreen" component={FitnessTrackerScreen} />
+            <Stack.Screen name="FitnessHistoryScreen" component={FitnessHistoryScreen} />
             <Stack.Screen name="FitnessExtraScreen" component={FitnessExtraScreen} />
           </>
         )}

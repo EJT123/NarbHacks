@@ -106,6 +106,14 @@ const NotesDashboardScreen = ({ navigation }) => {
         <AntDesign name="pluscircle" size={20} color={darkTheme.colors.text} />
         <Text style={styles.newNoteButtonText}>Create a New Note</Text>
       </TouchableOpacity>
+
+      <TouchableOpacity
+        onPress={() => navigation.navigate("FitnessTrackerScreen")}
+        style={[styles.newNoteButton, { backgroundColor: darkTheme.colors.accent, marginTop: 16 }]}
+      >
+        <AntDesign name="heart" size={20} color={darkTheme.colors.text} />
+        <Text style={styles.newNoteButtonText}>Fitness Tracker</Text>
+      </TouchableOpacity>
     </View>
   );
 };

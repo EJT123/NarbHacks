@@ -25,65 +25,37 @@ const LoginScreen = ({ navigation }) => {
     try {
       if (authType === "google") {
         const result = await startGoogleAuthFlow();
-        
         const { createdSessionId, setActive, signIn, signUp } = result;
-        
         if (createdSessionId) {
           await setActive({ session: createdSessionId });
           navigation.navigate("NotesDashboardScreen");
-        } else {
-          // Handle sign-up flow for new users
-          if (signUp && signUp.status === "missing_requirements") {
-            // Check if phone number is truly required or optional
-            const isPhoneRequired = signUp.requiredFields.includes("phone_number");
-            
-            if (isPhoneRequired) {
-              // If phone is required, we need to handle this differently
-              // For now, just try to create the account anyway
-              try {
-                await signUp.update({
-                  phoneNumber: "+1234567890" // Dummy number - you should handle this properly
-                });
-                
-                const { createdSessionId: newSessionId } = await signUp.create();
-                
-                if (newSessionId) {
-                  await setActive({ session: newSessionId });
-                  navigation.navigate("NotesDashboardScreen");
-                }
-              } catch (updateError) {
-                Alert.alert(
-                  "Configuration Issue",
-                  "Your Clerk dashboard requires a phone number for sign-ups. Please update your Clerk dashboard settings to make phone number optional, or implement a phone number collection screen.",
-                  [{ text: "OK" }]
-                );
-              }
-            } else {
-              // Phone is optional, just create the user
-              try {
-                const { createdSessionId: newSessionId } = await signUp.create();
-                
-                if (newSessionId) {
-                  await setActive({ session: newSessionId });
-                  navigation.navigate("NotesDashboardScreen");
-                }
-              } catch (signUpError) {
-                // Sign-up error handled silently
-              }
+        } else if (signUp) {
+          // If signUp is present, this is a new user. Complete sign up.
+          try {
+            console.log('signUp object:', signUp, 'keys:', Object.keys(signUp));
+            // If phone number is required, you may need to collect it here.
+            const { createdSessionId: newSessionId } = await signUp.create({});
+            if (newSessionId) {
+              await setActive({ session: newSessionId });
+              navigation.navigate("NotesDashboardScreen");
             }
-          } else if (signIn && signIn.firstFactorVerification?.error) {
+          } catch (signUpError) {
             Alert.alert(
-              "Sign In Error",
-              "This Google account is not associated with an existing user. Please sign up first.",
+              "Sign Up Error",
+              signUpError.message || "Could not complete sign up. Please try again or contact support.",
               [{ text: "OK" }]
             );
           }
+        } else if (signIn && signIn.firstFactorVerification?.error) {
+          Alert.alert(
+            "Sign In Error",
+            "This Google account is not associated with an existing user. Please sign up first.",
+            [{ text: "OK" }]
+          );
         }
       } else if (authType === "apple") {
         const result = await startAppleAuthFlow();
-        
         const { createdSessionId, setActive } = result;
-        
         if (createdSessionId) {
           await setActive({ session: createdSessionId });
           navigation.navigate("NotesDashboardScreen");

@@ -12,9 +12,12 @@
       "resizeMode": "contain",
       "backgroundColor": "#0D87E1"
     },
-    "assetBundlePatterns": ["**/*"],
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.anonymous.NotesContract"
     },
     "android": {
       "adaptiveIcon": {
@@ -25,6 +28,8 @@
     "web": {
       "favicon": "./assets/favicon.png"
     },
-    "plugins": ["expo-font"]
+    "plugins": [
+      "expo-font"
+    ]
   }
 }

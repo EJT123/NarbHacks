@@ -1,12 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import Header from "@/components/Header";
 
 export default function HomePage() {
   return (
     <main className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900">
-      <Header />
       
       {/* Hero Section */}
       <section className="relative overflow-hidden">

@@ -115,3 +115,26 @@ export const deactivateGoal = mutation({
     }
   },
 }); 
+
+// Get progress for a specific goal type
+export const getGoalProgress = query({
+  args: { type: v.string() },
+  handler: async (ctx, { type }) => {
+    const userId = await getUserId(ctx);
+    if (!userId) return null;
+    const goal = await ctx.db
+      .query("goals")
+      .withIndex("by_user_type", (q) => q.eq("userId", userId).eq("type", type))
+      .filter((q) => q.eq(q.field("isActive"), true))
+      .first();
+    if (!goal) return null;
+    const percent = goal.target === 0 ? 0 : Math.min(100, Math.max(0, (goal.current / goal.target) * 100));
+    return {
+      target: goal.target,
+      current: goal.current,
+      percent,
+      startDate: goal.startDate,
+      endDate: goal.endDate,
+    };
+  },
+}); 

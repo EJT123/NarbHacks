@@ -1,6 +1,7 @@
 import { mutation, query } from "./_generated/server";
 import { v } from "convex/values";
 import { Auth } from "convex/server";
+import { internal } from "./_generated/api";
 
 export const getUserId = async (ctx: { auth: Auth }) => {
   return (await ctx.auth.getUserIdentity())?.subject;
@@ -57,12 +58,14 @@ export const createFitnessLog = mutation({
     chest: v.optional(v.number()),
     bodyFat: v.optional(v.number()),
     useMetric: v.boolean(),
+    fitnessGoal: v.optional(v.string()), // <-- Added for onboarding
   },
   handler: async (ctx, args) => {
     const userId = await getUserId(ctx);
     if (!userId) throw new Error("User not found");
 
     // Check if log already exists for this date
+    let logId;
     const existingLog = await ctx.db
       .query("fitness")
       .withIndex("by_user_date", (q) => 
@@ -72,14 +75,104 @@ export const createFitnessLog = mutation({
 
     if (existingLog) {
       // Update existing log
-      return await ctx.db.patch(existingLog._id, args);
+      logId = await ctx.db.patch(existingLog._id, args);
     } else {
       // Create new log
-      return await ctx.db.insert("fitness", {
+      logId = await ctx.db.insert("fitness", {
         userId,
         ...args,
       });
     }
+    // --- Auto-update weight goal progress ---
+    // Find active fat_loss or muscle_gain goal
+    const goal = await ctx.db
+      .query("goals")
+      .withIndex("by_user_type", (q) => q.eq("userId", userId))
+      .filter((q) => q.or(
+        q.eq(q.field("type"), "fat_loss"),
+        q.eq(q.field("type"), "muscle_gain")
+      ))
+      .filter((q) => q.eq(q.field("isActive"), true))
+      .first();
+    if (goal) {
+      // Get all fitness logs for this user, sorted by date
+      const logs = await ctx.db
+        .query("fitness")
+        .withIndex("by_user_date", (q) => q.eq("userId", userId))
+        .order("asc")
+        .collect();
+      if (logs.length > 0) {
+        const startWeight = logs[0].weight;
+        const latestWeight = logs[logs.length - 1].weight;
+        let progress = 0;
+        if (goal.type === "fat_loss") {
+          progress = Math.max(0, startWeight - latestWeight); // lbs lost
+        } else if (goal.type === "muscle_gain") {
+          progress = Math.max(0, latestWeight - startWeight); // lbs gained
+        }
+        await ctx.db.patch(goal._id, { current: progress });
+      }
+    }
+    // --- End auto-update ---
+    
+    // Update logging streak
+    await ctx.db.insert("streaks", {
+      userId,
+      currentStreak: 1,
+      longestStreak: 1,
+      lastLogDate: args.date,
+      streakType: "logging",
+    });
+    
+    // Check for achievements
+    const checkAchievements = async () => {
+      // Check streak achievements
+      const streak = await ctx.db
+        .query("streaks")
+        .withIndex("by_user_type", (q) => 
+          q.eq("userId", userId).eq("streakType", "logging")
+        )
+        .first();
+      
+      if (streak) {
+        await ctx.db.insert("achievements", {
+          userId,
+          type: "streak",
+          title: streak.currentStreak >= 7 ? "Week Warrior" : "",
+          description: "7-day logging streak",
+          icon: "🔥",
+          unlockedAt: new Date().toISOString(),
+          progress: streak.currentStreak,
+          target: 7,
+        });
+      }
+      
+      // Check workout achievements
+      if (args.exerciseDuration > 0) {
+        const workoutCount = await ctx.db
+          .query("fitness")
+          .withIndex("by_user_date", (q) => q.eq("userId", userId))
+          .filter((q) => q.gt(q.field("exerciseDuration"), 0))
+          .collect();
+        
+        if (workoutCount.length === 1) {
+          await ctx.db.insert("achievements", {
+            userId,
+            type: "workout",
+            title: "First Steps",
+            description: "Log your first workout",
+            icon: "💪",
+            unlockedAt: new Date().toISOString(),
+            progress: 1,
+            target: 1,
+          });
+        }
+      }
+    };
+    
+    checkAchievements();
+    
+    return logId;
   },
 });
 

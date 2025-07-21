@@ -101,7 +101,7 @@ const AdaptiveAvatar = () => {
   };
 
   const renderAvatar = () => {
-    const { bodyWidth, muscleDefinition, hydrationLevel, energyLevel, avgSleep, avgMood } = avatarParams;
+    const { bodyWidth, muscleDefinition, hydrationLevel, energyLevel, avgSleep, avgMood, bmi } = avatarParams;
     const centerX = 200;
     
     return (

@@ -62,6 +62,66 @@ export default function Header() {
               Fitness
             </Link>
             <Link
+              href="/goals"
+              className={`px-4 py-2 rounded-lg font-medium transition-all duration-200 ${
+                isActive("/goals")
+                  ? "bg-orange-500 text-white shadow-lg shadow-orange-500/25"
+                  : "text-gray-300 hover:text-white hover:bg-gray-800"
+              }`}
+            >
+              Goals
+            </Link>
+            <Link
+              href="/social"
+              className={`px-4 py-2 rounded-lg font-medium transition-all duration-200 ${
+                isActive("/social")
+                  ? "bg-orange-500 text-white shadow-lg shadow-orange-500/25"
+                  : "text-gray-300 hover:text-white hover:bg-gray-800"
+              }`}
+            >
+              Social
+            </Link>
+            <Link
+              href="/leaderboards"
+              className={`px-4 py-2 rounded-lg font-medium transition-all duration-200 ${
+                isActive("/leaderboards")
+                  ? "bg-orange-500 text-white shadow-lg shadow-orange-500/25"
+                  : "text-gray-300 hover:text-white hover:bg-gray-800"
+              }`}
+            >
+              Leaderboards
+            </Link>
+            <Link
+              href="/achievements"
+              className={`px-4 py-2 rounded-lg font-medium transition-all duration-200 ${
+                isActive("/achievements")
+                  ? "bg-orange-500 text-white shadow-lg shadow-orange-500/25"
+                  : "text-gray-300 hover:text-white hover:bg-gray-800"
+              }`}
+            >
+              Achievements
+            </Link>
+            <Link
+              href="/challenges"
+              className={`px-4 py-2 rounded-lg font-medium transition-all duration-200 ${
+                isActive("/challenges")
+                  ? "bg-orange-500 text-white shadow-lg shadow-orange-500/25"
+                  : "text-gray-300 hover:text-white hover:bg-gray-800"
+              }`}
+            >
+              Challenges
+            </Link>
+            <Link
+              href="/voice"
+              className={`px-4 py-2 rounded-lg font-medium transition-all duration-200 ${
+                isActive("/voice")
+                  ? "bg-orange-500 text-white shadow-lg shadow-orange-500/25"
+                  : "text-gray-300 hover:text-white hover:bg-gray-800"
+              }`}
+            >
+              Voice Log
+            </Link>
+            <Link
               href="/extra"
               className={`px-4 py-2 rounded-lg font-medium transition-all duration-200 ${
                 isActive("/extra")
@@ -98,7 +158,7 @@ export default function Header() {
         </div>
 
         {/* Mobile Navigation */}
-        <nav className="md:hidden mt-4 flex justify-center space-x-4">
+        <nav className="md:hidden mt-4 flex flex-wrap justify-center gap-2">
           <Link
             href="/"
             className={`px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
@@ -128,6 +188,66 @@ export default function Header() {
             }`}
           >
             Fitness
+          </Link>
+          <Link
+            href="/goals"
+            className={`px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
+              isActive("/goals")
+                ? "bg-orange-500 text-white shadow-lg shadow-orange-500/25"
+                : "text-gray-300 hover:text-white hover:bg-gray-800"
+            }`}
+          >
+            Goals
+          </Link>
+          <Link
+            href="/social"
+            className={`px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
+              isActive("/social")
+                ? "bg-orange-500 text-white shadow-lg shadow-orange-500/25"
+                : "text-gray-300 hover:text-white hover:bg-gray-800"
+            }`}
+          >
+            Social
+          </Link>
+          <Link
+            href="/leaderboards"
+            className={`px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
+              isActive("/leaderboards")
+                ? "bg-orange-500 text-white shadow-lg shadow-orange-500/25"
+                : "text-gray-300 hover:text-white hover:bg-gray-800"
+            }`}
+          >
+            Rankings
+          </Link>
+          <Link
+            href="/achievements"
+            className={`px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
+              isActive("/achievements")
+                ? "bg-orange-500 text-white shadow-lg shadow-orange-500/25"
+                : "text-gray-300 hover:text-white hover:bg-gray-800"
+            }`}
+          >
+            Badges
+          </Link>
+          <Link
+            href="/challenges"
+            className={`px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
+              isActive("/challenges")
+                ? "bg-orange-500 text-white shadow-lg shadow-orange-500/25"
+                : "text-gray-300 hover:text-white hover:bg-gray-800"
+            }`}
+          >
+            Challenges
+          </Link>
+          <Link
+            href="/voice"
+            className={`px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
+              isActive("/voice")
+                ? "bg-orange-500 text-white shadow-lg shadow-orange-500/25"
+                : "text-gray-300 hover:text-white hover:bg-gray-800"
+            }`}
+          >
+            Voice
           </Link>
           <Link
             href="/extra"

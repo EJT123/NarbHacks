@@ -5,6 +5,13 @@ import { api } from "@packages/backend/convex/_generated/api";
 import { useMutation } from "convex/react";
 import { useRouter } from "next/navigation";
 
+const GOALS = [
+  { key: "fat_loss", label: "Fat Loss" },
+  { key: "muscle_gain", label: "Muscle Gain" },
+  { key: "cardio_endurance", label: "Cardio Endurance" },
+  { key: "mobility_recovery", label: "Mobility/Recovery" },
+];
+
 const UserSetup = () => {
   const createFitnessLog = useMutation(api.fitness.createFitnessLog);
   const router = useRouter();
@@ -14,6 +21,8 @@ const UserSetup = () => {
   const [gender, setGender] = useState("");
   const [useMetric, setUseMetric] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [step, setStep] = useState(1);
+  const [fitnessGoal, setFitnessGoal] = useState("");
 
   // Calculate BMI for preview
   const calculateBMI = () => {
@@ -161,7 +170,7 @@ const UserSetup = () => {
   };
 
   const handleSubmit = async () => {
-    if (!height || !weight || !gender) {
+    if (!height || !weight || !gender || !fitnessGoal) {
       alert("Please fill in all fields to continue.");
       return;
     }
@@ -182,6 +191,7 @@ const UserSetup = () => {
         weight: Number(weight),
         useMetric,
         gender: gender.toLowerCase(),
+        fitnessGoal, // <-- Pass selected goal
       });
       
       alert("Setup Complete! Your profile has been created. You can now start tracking your daily fitness data.");
@@ -198,135 +208,159 @@ const UserSetup = () => {
       <div className="container mx-auto px-4 py-8">
         {/* Header */}
         <div className="text-center mb-12">
-          <div className="flex items-center justify-center mb-4">
-            <div className="w-12 h-12 bg-orange-500 rounded-xl flex items-center justify-center mr-3">
-              <span className="text-xl font-bold text-white">DF</span>
+          <h1 className="text-3xl font-bold mb-2">Setup Profile</h1>
+          <p className="text-gray-400">Let's get started with your fitness journey!</p>
+        </div>
+        {step === 1 && (
+          <>
+            {/* Avatar Preview */}
+            <div className="mb-12">
+              <h2 className="text-2xl font-bold text-center mb-4">Your Avatar Preview</h2>
+              <p className="text-gray-400 text-center mb-8">
+                Based on your measurements, here's how your avatar will look
+              </p>
+              {renderPreviewAvatar()}
             </div>
-            <h1 className="text-3xl font-bold text-white">DailyForm</h1>
-          </div>
-          <p className="text-gray-400 text-lg">Let's get to know you</p>
-        </div>
 
-        {/* Avatar Preview */}
-        <div className="mb-12">
-          <h2 className="text-2xl font-bold text-center mb-4">Your Avatar Preview</h2>
-          <p className="text-gray-400 text-center mb-8">
-            Based on your measurements, here's how your avatar will look
-          </p>
-          {renderPreviewAvatar()}
-        </div>
-
-        {/* Setup Form */}
-        <div className="max-w-2xl mx-auto">
-          <h2 className="text-2xl font-bold text-center mb-8">Your Information</h2>
-          
-          {/* Unit Toggle */}
-          <div className="flex items-center justify-center mb-8">
-            <span className="text-gray-400 mr-4">Units:</span>
-            <button
-              className={`px-4 py-2 rounded-lg border mr-2 ${
-                useMetric 
-                  ? 'bg-gray-700 border-orange-500 text-orange-500' 
-                  : 'bg-gray-800 border-gray-600 text-gray-400'
-              }`}
-              onClick={() => setUseMetric(true)}
-            >
-              Metric
-            </button>
-            <button
-              className={`px-4 py-2 rounded-lg border ${
-                !useMetric 
-                  ? 'bg-gray-700 border-orange-500 text-orange-500' 
-                  : 'bg-gray-800 border-gray-600 text-gray-400'
-              }`}
-              onClick={() => setUseMetric(false)}
-            >
-              Imperial
-            </button>
-          </div>
-
-          {/* Height Input */}
-          <div className="mb-6">
-            <label className="block text-white font-semibold mb-2">
-              Height ({useMetric ? 'cm' : 'inches'})
-            </label>
-            <input
-              type="number"
-              value={height}
-              onChange={(e) => setHeight(e.target.value)}
-              placeholder={useMetric ? "e.g. 175" : "e.g. 69"}
-              className="w-full bg-gray-800 border border-gray-600 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:border-orange-500 focus:outline-none"
-            />
-          </div>
-
-          {/* Weight Input */}
-          <div className="mb-6">
-            <label className="block text-white font-semibold mb-2">
-              Weight ({useMetric ? 'kg' : 'lbs'})
-            </label>
-            <input
-              type="number"
-              value={weight}
-              onChange={(e) => setWeight(e.target.value)}
-              placeholder={useMetric ? "e.g. 70" : "e.g. 154"}
-              className="w-full bg-gray-800 border border-gray-600 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:border-orange-500 focus:outline-none"
-            />
-          </div>
-
-          {/* Gender Selection */}
-          <div className="mb-8">
-            <label className="block text-white font-semibold mb-4">Gender</label>
-            <div className="grid grid-cols-3 gap-4">
-              {[
-                { value: 'male', label: 'Male', icon: '👨' },
-                { value: 'female', label: 'Female', icon: '👩' },
-                { value: 'other', label: 'Other', icon: '👤' }
-              ].map((option) => (
+            {/* Setup Form */}
+            <div className="max-w-2xl mx-auto">
+              <h2 className="text-2xl font-bold text-center mb-8">Your Information</h2>
+              
+              {/* Unit Toggle */}
+              <div className="flex items-center justify-center mb-8">
+                <span className="text-gray-400 mr-4">Units:</span>
                 <button
-                  key={option.value}
-                  className={`p-4 rounded-xl border-2 flex flex-col items-center ${
-                    gender === option.value
-                      ? 'bg-gray-700 border-orange-500 text-orange-500'
-                      : 'bg-gray-800 border-gray-600 text-gray-400 hover:border-gray-500'
+                  className={`px-4 py-2 rounded-lg border mr-2 ${
+                    useMetric 
+                      ? 'bg-gray-700 border-orange-500 text-orange-500' 
+                      : 'bg-gray-800 border-gray-600 text-gray-400'
                   }`}
-                  onClick={() => setGender(option.value)}
+                  onClick={() => setUseMetric(true)}
                 >
-                  <span className="text-2xl mb-2">{option.icon}</span>
-                  <span className="font-medium">{option.label}</span>
+                  Metric
                 </button>
-              ))}
-            </div>
-          </div>
+                <button
+                  className={`px-4 py-2 rounded-lg border ${
+                    !useMetric 
+                      ? 'bg-gray-700 border-orange-500 text-orange-500' 
+                      : 'bg-gray-800 border-gray-600 text-gray-400'
+                  }`}
+                  onClick={() => setUseMetric(false)}
+                >
+                  Imperial
+                </button>
+              </div>
 
-          {/* BMI Info */}
-          {bmi && (
-            <div className="bg-gray-800 p-6 rounded-xl border border-gray-700 mb-8">
-              <h3 className="text-xl font-bold text-white mb-2">Your BMI: {bmi.toFixed(1)}</h3>
-              <p className={`text-lg font-semibold mb-3`} style={{ color: getBMICategory(bmi).color }}>
-                {getBMICategory(bmi).category}
-              </p>
-              <p className="text-gray-400 text-sm leading-relaxed">
-                This helps us personalize your fitness recommendations and avatar appearance.
-              </p>
-            </div>
-          )}
+              {/* Height Input */}
+              <div className="mb-6">
+                <label className="block text-white font-semibold mb-2">
+                  Height ({useMetric ? 'cm' : 'inches'})
+                </label>
+                <input
+                  type="number"
+                  value={height}
+                  onChange={(e) => setHeight(e.target.value)}
+                  placeholder={useMetric ? "e.g. 175" : "e.g. 69"}
+                  className="w-full bg-gray-800 border border-gray-600 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:border-orange-500 focus:outline-none"
+                />
+              </div>
 
-          {/* Submit Button */}
-          <button
-            className={`w-full py-4 rounded-xl font-bold text-white flex items-center justify-center ${
-              (!height || !weight || !gender || isSubmitting)
-                ? 'bg-gray-700 text-gray-400 cursor-not-allowed'
-                : 'bg-orange-500 hover:bg-orange-600'
-            }`}
-            onClick={handleSubmit}
-            disabled={!height || !weight || !gender || isSubmitting}
-          >
-            {isSubmitting ? "Creating Profile..." : "Create My Profile"}
-            <svg className="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-            </svg>
-          </button>
-        </div>
+              {/* Weight Input */}
+              <div className="mb-6">
+                <label className="block text-white font-semibold mb-2">
+                  Weight ({useMetric ? 'kg' : 'lbs'})
+                </label>
+                <input
+                  type="number"
+                  value={weight}
+                  onChange={(e) => setWeight(e.target.value)}
+                  placeholder={useMetric ? "e.g. 70" : "e.g. 154"}
+                  className="w-full bg-gray-800 border border-gray-600 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:border-orange-500 focus:outline-none"
+                />
+              </div>
+
+              {/* Gender Selection */}
+              <div className="mb-8">
+                <label className="block text-white font-semibold mb-4">Gender</label>
+                <div className="grid grid-cols-3 gap-4">
+                  {[
+                    { value: 'male', label: 'Male', icon: '👨' },
+                    { value: 'female', label: 'Female', icon: '👩' },
+                    { value: 'other', label: 'Other', icon: '👤' }
+                  ].map((option) => (
+                    <button
+                      key={option.value}
+                      className={`p-4 rounded-xl border-2 flex flex-col items-center ${
+                        gender === option.value
+                          ? 'bg-gray-700 border-orange-500 text-orange-500'
+                          : 'bg-gray-800 border-gray-600 text-gray-400 hover:border-gray-500'
+                      }`}
+                      onClick={() => setGender(option.value)}
+                    >
+                      <span className="text-2xl mb-2">{option.icon}</span>
+                      <span className="font-medium">{option.label}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* BMI Info */}
+              {bmi && (
+                <div className="bg-gray-800 p-6 rounded-xl border border-gray-700 mb-8">
+                  <h3 className="text-xl font-bold text-white mb-2">Your BMI: {bmi.toFixed(1)}</h3>
+                  <p className={`text-lg font-semibold mb-3`} style={{ color: getBMICategory(bmi).color }}>
+                    {getBMICategory(bmi).category}
+                  </p>
+                  <p className="text-gray-400 text-sm leading-relaxed">
+                    This helps us personalize your fitness recommendations and avatar appearance.
+                  </p>
+                </div>
+              )}
+
+              {/* Submit Button */}
+              <button
+                className={`w-full py-4 rounded-xl font-bold text-white flex items-center justify-center ${
+                  (!height || !weight || !gender || isSubmitting)
+                    ? 'bg-gray-700 text-gray-400 cursor-not-allowed'
+                    : 'bg-orange-500 hover:bg-orange-600'
+                }`}
+                onClick={handleSubmit}
+                disabled={!height || !weight || !gender || isSubmitting}
+              >
+                {isSubmitting ? "Creating Profile..." : "Create My Profile"}
+                <svg className="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                </svg>
+              </button>
+            </div>
+          </>
+        )}
+        {step === 2 && (
+          <>
+            <div className="mb-8">
+              <h2 className="text-xl font-semibold mb-4">What's your main fitness goal?</h2>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {GOALS.map(goal => (
+                  <button
+                    key={goal.key}
+                    className={`rounded-lg px-6 py-4 font-bold text-lg border-2 transition-all ${fitnessGoal === goal.key ? 'bg-orange-500 border-orange-500 text-white' : 'bg-gray-800 border-gray-700 text-gray-200'}`}
+                    onClick={() => setFitnessGoal(goal.key)}
+                  >
+                    {goal.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+            <div className="flex justify-between">
+              <button className="px-6 py-2 rounded-lg bg-gray-700 hover:bg-gray-600" onClick={() => setStep(1)}>
+                Back
+              </button>
+              <button className="px-6 py-2 rounded-lg bg-orange-500 hover:bg-orange-600 font-bold" onClick={handleSubmit} disabled={isSubmitting}>
+                Finish
+              </button>
+            </div>
+          </>
+        )}
 
         {/* Info Section */}
         <div className="max-w-4xl mx-auto mt-16">

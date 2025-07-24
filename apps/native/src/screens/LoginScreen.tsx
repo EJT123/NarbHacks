@@ -1,12 +1,22 @@
 import React from "react";
-import { View, Text, StyleSheet, TouchableOpacity, Image } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity, Image, Alert } from "react-native";
 import { useOAuth } from "@clerk/clerk-expo";
 import { AntDesign } from '@expo/vector-icons';
+import { useAuth } from "@clerk/clerk-expo";
 
 export default function LoginScreen({ navigation }) {
   const { startOAuthFlow } = useOAuth({ strategy: "oauth_google" });
+  const { isSignedIn, isLoaded } = useAuth();
 
   const onPress = React.useCallback(async () => {
+    if (!isLoaded) {
+      Alert.alert("Please wait", "Authentication is still loading.");
+      return;
+    }
+    if (isSignedIn) {
+      Alert.alert("Already Signed In", "You are already signed in.");
+      return;
+    }
     try {
       const { createdSessionId, setActive } = await startOAuthFlow();
 
@@ -15,9 +25,10 @@ export default function LoginScreen({ navigation }) {
         navigation.navigate("NotesDashboardScreen");
       }
     } catch (err) {
+      Alert.alert("Login Error", err?.message || "An error occurred during login.");
       console.error("OAuth error", err);
     }
-  }, []);
+  }, [isLoaded, isSignedIn]);
 
   return (
     <View style={styles.container}>
